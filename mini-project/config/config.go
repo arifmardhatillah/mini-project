@@ -26,11 +26,11 @@ type Config struct {
 func InitDB() {
 
 	config := Config{
-		DB_Username: "alta",
+		DB_Username: "root",
 		DB_Password: "root",
 		DB_Port:     "3306",
-		DB_Host:     "192.168.1.16",
-		DB_Name:     "tugas_orm",
+		DB_Host:     "localhost",
+		DB_Name:     "mini_project",
 	}
 
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
