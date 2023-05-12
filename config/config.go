@@ -2,52 +2,39 @@ package config
 
 import (
 	"fmt"
-	"prak/models"
+	"project_structure/model"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
-func init() {
-	InitDB()
-	InitialMigration()
-}
-
-type Config struct {
-	DB_Username string
-	DB_Password string
-	DB_Port     string
-	DB_Host     string
-	DB_Name     string
-}
-
-func InitDB() {
-
-	config := Config{
-		DB_Username: "root",
-		DB_Password: "root",
-		DB_Port:     "3306",
-		DB_Host:     "localhost",
-		DB_Name:     "mini_project",
+func InitDB() *gorm.DB {
+	config := map[string]string{
+		"DB_Username": "alta",
+		"DB_Password": "root",
+		"DB_Port":     "3306",
+		"DB_Host":     "192.168.1.16",
+		"DB_Name":     "new_project",
 	}
 
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		config.DB_Username,
-		config.DB_Password,
-		config.DB_Host,
-		config.DB_Port,
-		config.DB_Name,
-	)
+		config["DB_Username"],
+		config["DB_Password"],
+		config["DB_Host"],
+		config["DB_Port"],
+		config["DB_Name"])
 
-	var err error
-	DB, err = gorm.Open("mysql", connectionString)
-	if err != nil {
-		panic(err)
+	var e error
+	DB, e = gorm.Open(mysql.Open(connectionString), &gorm.Config{})
+	if e != nil {
+		panic(e)
 	}
+	InitMigrate()
+	return DB
 }
 
-func InitialMigration() {
-	DB.AutoMigrate(&models.User{}, &models.Book{}, &models.Blog{})
+func InitMigrate() {
+	DB.AutoMigrate(&model.User{}, &model.Product{}, &model.Order{}, &model.Payment{}, &model.Shipping{})
 }

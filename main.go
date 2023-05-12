@@ -1,20 +1,19 @@
 package main
 
 import (
-	"prak/config"
-	"prak/middlewares"
-	"prak/routes"
+	"project_structure/config"
+	"project_structure/middleware"
+	"project_structure/route"
 
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/labstack/echo"
 )
 
 func main() {
-	// create a new echo instance
-	config.InitDB()
-	e := routes.New()
-	middlewares.LogMiddlewares(e)
+	db := config.InitDB()
+	e := echo.New()
+	middleware.Logmiddleware(e)
 
-	// start the server, and log if it fails
-	e.Logger.Fatal(e.Start(":8000"))
+	route.NewRoute(e, db)
 
+	e.Logger.Fatal(e.Start(":8080"))
 }
